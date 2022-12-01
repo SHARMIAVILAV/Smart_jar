@@ -1,8 +1,72 @@
-EXPLANATION:
-Smart Jar allows us to keep track of the stocks, and it is easily accessible from using the internet. The Jar includes an ultrasonic sensor at the top of it and uses the ultra-sonic reflected waves to figure out at what extent the Jar is filled and how much space is left inside the jar. Whenever the amount of content changes in the jar, it is sensed by the NodeMCU, and the same is updated on the web server. This can be helpful to track supplies and plan for restocking from anywhere in the world. Previously we used Arduino and ESP8266-01 to build smart dustbin using the same methodology.
-How does an Ultrasonic Sensor work?
-Before we get any further, we should know how an Ultrasonic sensor works so that we can understand this tutorial much better. The ultrasonic sensor used in this project is shown below.
-As you can see it has two circular eyes like projections and four pins coming out of it. The two eye-like projections are the Ultrasonic wave (hereafter referred as US wave) Transmitter and receiver. The transmitter emits an US wave at a frequency of 40Hz, this wave travels through the air and gets reflected back when it senses an object. The returning waves are observed by the receiver. Now we know the time taken for this wave to get reflected and come back and the speed of the US wave is also universal (3400 cm/s). Using this information and the below high school formulae we can calculate the distance covered.
-Distance = Speed × Time
-Now that we know how an US sensor works, let us how it can be interfaced with any MCU/CPU using the four pins. These four pins are Vcc, Trigger, Echo and Ground respectively. The module works on +5V and hence the Vcc and ground pin is used to power the module. The other two pins are the I/O pins using which we communicate to our MCU. The trigger pin should be declared as an output pin and made high for a 10uS, this will transmit the US wave into the air as 8 cycle sonic burst. Once the wave is observed the Echo pin will go high for the exact interval of time which was taken by the US wave to return back to the sensor module. Hence this Echo pin will be declared as input and a timer will be used to measure how long the pin was high.
-The circuit is very simple as we are only using the ultrasonic sensor and NodeMCU. HC-SR04 ultrasonic sensor works on 5V, so if you connect it to 3.3V, it won’t work. VCC pin of the ultrasonic sensor is connected to the VIN pin of NodeMCU. Trig and Echo pins are connected to D5 and D6 pin of NodeMCU while the GND pin of the sensor is connected to the GND pin of NodeMCU. A 5V power supply powers NodeMCU.
+
+# IOT based Smart Jar
+
+In this ***Internet of Things (IoT) smart jar***, we will are using an ultrasonic sensor to monitor the level of a Jar and then email the user with a warning. Jar's level will also be shown on a website run by an ***ESP8266 NodeMCU***.
+
+## Description
+We can quickly access this smart Jar via the internet and use it to keep track of the stock prices. The Jar has an ***ultrasonic sensor*** at the top that measures how full the Jar is and how much room is still within using the *ultrasonic reflected waves*. The ***NodeMCU*** detects any changes in the volume of the contents in the jar, and updates the web server accordingly. This can be used to *keep track of supplies* and *make restocking plans* from any location in the world.
+
+
+## Circuit Connection
+
+Since we are only utilising the ultrasonic sensor and NodeMCU, the circuit is quite straightforward. The **HC-SR04 ultrasonic sensor requires 5V to operate**; if you connect it to 3.3V, it will not function. The ultrasonic sensor's VCC pin is linked to NodeMCU's VIN pin. The **NodeMCU's D5 and D6 pins are linked to the Trig and Echo pins**, respectively, while the sensor's GND pin is connected to the NodeMCU's GND pin. NodeMCU is powered by a ***5V*** power supply.
+
+
+## IFTTT Setup for Smart Jar
+
+
+1. First login to [*IFTTT*](https://ifttt.com/) and search for ‘Webhooks’
+2. Now to get the Private key, click on ***`Documentation`***. Copy this key somewhere, it will be used in the code.
+3. Create an applet using Webhooks and Email services. To create an applet, click on your profile and then click on ***`Create`*** from available options.
+4. Now in the next window, select ***`If This Then That`***.
+5. In ***`This`*** field we will use webhooks to get the web requests from the NodeMCU.
+6. Now select ***`Receive a Web Request`***  trigger and then enter the event name as jar_event and then click on ***`Create Trigger.`*** 
+7. After this, click on ***`Then That`***  and then click on Email.
+8. Now in Email, click on ***`send me an email`***  and enter the email subject and body and then click on create action.
+9. In the last step, click on ***`Finish`***  to complete the Applet setup.
+
+
+
+
+## Code Explanation
+
+By including all the required library files we can start our code. The ultrasonic sensor doesn’t require a library file, so we only need ESP8266WiFi.h library file.
+
+`#include <ESP8266WiFi.h>`
+
+After that, define the pins where you connected the Trig and Echo pins and also define two variables for calculating distance and duration.
+
+`const int trigPin = D5;  
+const int echoPin = D6;
+long duration;
+int distance;`
+
+After that, make instances for Wi-Fi name, Wi-Fi password, IFTTT hostname, and private key.
+
+`const char* ssid = "Wi-Fi Name";
+const char* password = "Password";
+const char *host = "maker.ifttt.com";
+const char *privateKey = "Private key";`
+
+Now to access the WiFiServer, we declared an object WifiServer library. 80 is the default port for HTTP.
+
+`WiFiServer server(80);`
+
+Now inside the void loop function, calculate the time between triggered and received signal. This time will be used to calculate the distance.
+
+`duration = pulseIn(echoPin, HIGH);
+distance = duration * 0.0340 / 2;`
+
+After that, distance is converted into a percentage to show the Jar’s occupancy.
+
+`level =((14-distance)/14.0)*100;`
+
+Then we compared the jar’s occupancy, and if the occupancy level is less than 5, then it will trigger an IFTTT event to send warning Email.
+
+`if ( level <= 10) {
+        send_event("jar_event");
+        }`
+## Testing
+
+Just use hands  to check its working capability after uploading the code. Now use the IP address that is given on Serial Monitor to inspect the website. It should display how full the Jar is. Additionally, if the Jar's occupancy level is below 10, a warning email will be sent to you. Here, the warning level is established based on how long my Jar is. It can be modified to fit your needs.
+
