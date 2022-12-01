@@ -74,5 +74,5 @@ Just use hands  to check its working capability after uploading the code. Now us
 
 ![smart_jar2](https://user-images.githubusercontent.com/84708284/205092841-291242d4-de54-4f21-98d2-fef610a84922.jpg)
 
-![smart_jar3](https://user-images.githubusercontent.com/84708284/205092910-80de5edb-d16c-4661-928d-98a0adb211c3.jpg)
 
+![smart_jar3](https://user-images.githubusercontent.com/84708284/205095007-5eac1122-8639-44f9-bedc-c9d78f05e20f.jpg)
