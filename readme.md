@@ -70,3 +70,9 @@ Then we compared the jar’s occupancy, and if the occupancy level is less than 
 
 Just use hands  to check its working capability after uploading the code. Now use the IP address that is given on Serial Monitor to inspect the website. It should display how full the Jar is. Additionally, if the Jar's occupancy level is below 10, a warning email will be sent to you. Here, the warning level is established based on how long my Jar is. It can be modified to fit your needs.
 
+![smart_jar](https://user-images.githubusercontent.com/84708284/205092746-a87a41ff-0224-43c8-9adb-bfe887ddb30f.jpg)
+
+![smart_jar2](https://user-images.githubusercontent.com/84708284/205092841-291242d4-de54-4f21-98d2-fef610a84922.jpg)
+
+![smart_jar3](https://user-images.githubusercontent.com/84708284/205092910-80de5edb-d16c-4661-928d-98a0adb211c3.jpg)
+
